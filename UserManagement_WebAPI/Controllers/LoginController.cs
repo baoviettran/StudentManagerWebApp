@@ -26,6 +26,7 @@ namespace UserManagement_WebAPI.Controllers
             _context = context;
         }
 
+
         
 
         [AllowAnonymous]
