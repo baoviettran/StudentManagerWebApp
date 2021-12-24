@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.32002.261
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StudentManagerWebApp", "StudentManagerWebApp\StudentManagerWebApp.csproj", "{4A9D4188-F548-4038-BB6A-3B44D1D5D2CE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StudentManagement_WebAPI", "StudentManagement_WebAPI\StudentManagement_WebAPI.csproj", "{177F0178-5EE2-44DD-8F92-9983DC4CDD7E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StudentManagement_WebAPI", "StudentManagement_WebAPI\StudentManagement_WebAPI.csproj", "{177F0178-5EE2-44DD-8F92-9983DC4CDD7E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

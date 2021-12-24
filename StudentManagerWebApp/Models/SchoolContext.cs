@@ -14,9 +14,6 @@ namespace StudentManagerWebApp.Models
         }
         public DbSet<Student> Student { get; set; }
 
-        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        //{
-        //    optionsBuilder.UseSqlServer(@"Server=.\BAOVIET;Database=SchoolDB;Trusted_Connection=True;");
-        //}
+        
     }
 }

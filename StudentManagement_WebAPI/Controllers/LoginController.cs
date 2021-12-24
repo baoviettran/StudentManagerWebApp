@@ -30,7 +30,7 @@ namespace StudentManagement_WebAPI.Controllers
 
         [AllowAnonymous]
         [HttpPost]
-        public IActionResult Login([FromBody] UserInfo login)
+        public IActionResult Login([FromBody] UserDTO login)
         {
             IActionResult response = Unauthorized();
             var user = AuthenticateUser(login);
@@ -44,7 +44,7 @@ namespace StudentManagement_WebAPI.Controllers
             return response;
         }
 
-        private string GenerateJSONWebToken(UserInfo userInfo)
+        private string GenerateJSONWebToken(User userInfo)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
@@ -58,10 +58,10 @@ namespace StudentManagement_WebAPI.Controllers
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        private UserInfo AuthenticateUser(UserInfo login)
+        private User AuthenticateUser(UserDTO login)
         {
-            UserInfo user = null;
-            user = _context.UserInfos.FirstOrDefault(u => u.Email == login.Email && u.Password == login.Password);
+            User user = null;
+            user = _context.Users.FirstOrDefault(u => u.Email == login.Email && u.Password == login.Password);
             
             return user;
         }

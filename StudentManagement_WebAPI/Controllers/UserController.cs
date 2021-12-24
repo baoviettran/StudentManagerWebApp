@@ -13,47 +13,47 @@ namespace StudentManagement_WebAPI.Controllers
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    public class StudentsController : ControllerBase
+    public class UserController : ControllerBase
     {
         private readonly SchoolDBContext _context;
 
-        public StudentsController(SchoolDBContext context)
+        public UserController(SchoolDBContext context)
         {
             _context = context;
         }
 
-        // GET: api/Students
+        // GET: api/User
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Student>>> GetStudents()
+        public async Task<ActionResult<IEnumerable<User>>> GetUsers()
         {
-            return await _context.Students.ToListAsync();
+            return await _context.Users.ToListAsync();
         }
 
-        // GET: api/Students/5
+        // GET: api/User/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Student>> GetStudent(int id)
+        public async Task<ActionResult<User>> GetUser(int id)
         {
-            var student = await _context.Students.FindAsync(id);
+            var user = await _context.Users.FindAsync(id);
 
-            if (student == null)
+            if (user == null)
             {
                 return NotFound();
             }
 
-            return student;
+            return user;
         }
 
-        // PUT: api/Students/5
+        // PUT: api/User/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutStudent(int id, Student student)
+        public async Task<IActionResult> PutUser(int id, User user)
         {
-            if (id != student.Id)
+            if (id != user.UserId)
             {
                 return BadRequest();
             }
 
-            _context.Entry(student).State = EntityState.Modified;
+            _context.Entry(user).State = EntityState.Modified;
 
             try
             {
@@ -61,7 +61,7 @@ namespace StudentManagement_WebAPI.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!StudentExists(id))
+                if (!UserExists(id))
                 {
                     return NotFound();
                 }
@@ -74,36 +74,50 @@ namespace StudentManagement_WebAPI.Controllers
             return NoContent();
         }
 
-        // POST: api/Students
+        // POST: api/User
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Student>> PostStudent(Student student)
+        public async Task<ActionResult<User>> PostUser(User user)
         {
-            _context.Students.Add(student);
-            await _context.SaveChangesAsync();
+            _context.Users.Add(user);
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+                if (UserExists(user.UserId))
+                {
+                    return Conflict();
+                }
+                else
+                {
+                    throw;
+                }
+            }
 
-            return CreatedAtAction("GetStudent", new { id = student.Id }, student);
+            return CreatedAtAction("GetUser", new { id = user.UserId }, user);
         }
 
-        // DELETE: api/Students/5
+        // DELETE: api/User/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteStudent(int id)
+        public async Task<IActionResult> DeleteUser(int id)
         {
-            var student = await _context.Students.FindAsync(id);
-            if (student == null)
+            var user = await _context.Users.FindAsync(id);
+            if (user == null)
             {
                 return NotFound();
             }
 
-            _context.Students.Remove(student);
+            _context.Users.Remove(user);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        private bool StudentExists(int id)
+        private bool UserExists(int id)
         {
-            return _context.Students.Any(e => e.Id == id);
+            return _context.Users.Any(e => e.UserId == id);
         }
     }
 }

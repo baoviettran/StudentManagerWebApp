@@ -5,9 +5,11 @@ using System.Collections.Generic;
 
 namespace StudentManagement_WebAPI.Models
 {
-    public partial class UserInfo
+    public partial class UserDTO
     {
+        
         public string Email { get; set; }
         public string Password { get; set; }
+        
     }
 }
