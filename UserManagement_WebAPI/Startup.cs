@@ -15,6 +15,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using UserManagement_WebAPI.Repository;
 
 namespace UserManagement_WebAPI
 {
@@ -33,6 +34,7 @@ namespace UserManagement_WebAPI
             var connection = Configuration.GetConnectionString("SchoolDB");
             services.AddDbContextPool<SchoolDBContext>(options => options.UseSqlServer(connection));
             services.AddControllers();
+            services.AddScoped<IUserRepository, UserRepository>();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
             {

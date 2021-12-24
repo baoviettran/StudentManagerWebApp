@@ -5,11 +5,11 @@ using System.Collections.Generic;
 
 namespace UserManagement_WebAPI.Models
 {
-    public partial class UserDTO
+    public partial class UserDto
     {
         
         public string Email { get; set; }
         public string Password { get; set; }
-        
+        public string UserName { get; set; }
     }
 }

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using UserManagement_WebAPI.Models;
+using UserManagement_WebAPI.Repository;
 
 namespace UserManagement_WebAPI.Controllers
 {
@@ -15,25 +16,25 @@ namespace UserManagement_WebAPI.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly SchoolDBContext _context;
+        private IUserRepository _userRepo;
 
-        public UserController(SchoolDBContext context)
+        public UserController(IUserRepository userRepository)
         {
-            _context = context;
+            _userRepo = userRepository;
         }
 
         // GET: api/User
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<User>>> GetUsers()
+        public ActionResult<IEnumerable<User>> GetUsers()
         {
-            return await _context.Users.ToListAsync();
+            return _userRepo.GetUsers().ToList();
         }
 
         // GET: api/User/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<User>> GetUser(int id)
+        public ActionResult<User> GetUser(int id)
         {
-            var user = await _context.Users.FindAsync(id);
+            var user = _userRepo.GetUserByID(id);
 
             if (user == null)
             {
@@ -46,22 +47,19 @@ namespace UserManagement_WebAPI.Controllers
         // PUT: api/User/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutUser(int id, User user)
+        public IActionResult PutUser(int id, UserDto user)
         {
-            if (id != user.UserId)
-            {
-                return BadRequest();
-            }
+            var newUser = new User() {UserId=id, Email=user.Email, Password=user.Password, UserName = user.UserName };
 
-            _context.Entry(user).State = EntityState.Modified;
+            _userRepo.UpdateUser(newUser);
 
             try
             {
-                await _context.SaveChangesAsync();
+                _userRepo.Save();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!UserExists(id))
+                if (!_userRepo.ExistUser(id))
                 {
                     return NotFound();
                 }
@@ -77,16 +75,16 @@ namespace UserManagement_WebAPI.Controllers
         // POST: api/User
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<User>> PostUser(User user)
+        public ActionResult<User> PostUser(User user)
         {
-            _context.Users.Add(user);
+            _userRepo.InsertUser(user);
             try
             {
-                await _context.SaveChangesAsync();
+                _userRepo.Save();
             }
             catch (DbUpdateException)
             {
-                if (UserExists(user.UserId))
+                if (_userRepo.ExistUser(user.UserId))
                 {
                     return Conflict();
                 }
@@ -101,23 +99,23 @@ namespace UserManagement_WebAPI.Controllers
 
         // DELETE: api/User/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUser(int id)
+        public IActionResult DeleteUser(int id)
         {
-            var user = await _context.Users.FindAsync(id);
+            var user = _userRepo.GetUserByID(id);
             if (user == null)
             {
                 return NotFound();
             }
 
-            _context.Users.Remove(user);
-            await _context.SaveChangesAsync();
+            _userRepo.DeleteUser(id);
+            _userRepo.Save();
 
             return NoContent();
         }
 
-        private bool UserExists(int id)
-        {
-            return _context.Users.Any(e => e.UserId == id);
-        }
+        //private bool UserExists(int id)
+        //{
+        //    return _userRepo.(e => e.UserId == id);
+        //}
     }
 }

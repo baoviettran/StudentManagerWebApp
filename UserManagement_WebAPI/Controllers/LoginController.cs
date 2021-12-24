@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using System.Linq;
+using UserManagement_WebAPI.Repository;
 
 namespace UserManagement_WebAPI.Controllers
 {
@@ -18,12 +19,12 @@ namespace UserManagement_WebAPI.Controllers
     public class LoginController : ControllerBase
     {
         public IConfiguration _configuration;
-        private readonly SchoolDBContext _context;
+        private IUserRepository _userRepo;
 
-        public LoginController(IConfiguration config, SchoolDBContext context)
+        public LoginController(IConfiguration config, IUserRepository userRepository)
         {
             _configuration = config;
-            _context = context;
+            _userRepo = userRepository;
         }
 
 
@@ -31,7 +32,7 @@ namespace UserManagement_WebAPI.Controllers
 
         [AllowAnonymous]
         [HttpPost]
-        public IActionResult Login([FromBody] UserDTO login)
+        public IActionResult Login([FromBody] UserAccount login)
         {
             IActionResult response = Unauthorized();
             var user = AuthenticateUser(login);
@@ -59,10 +60,10 @@ namespace UserManagement_WebAPI.Controllers
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        private User AuthenticateUser(UserDTO login)
+        private User AuthenticateUser(UserAccount login)
         {
             User user = null;
-            user = _context.Users.FirstOrDefault(u => u.Email == login.Email && u.Password == login.Password);
+            user = _userRepo.GetUserByAccount(login.Email, login.Password);
             
             return user;
         }
