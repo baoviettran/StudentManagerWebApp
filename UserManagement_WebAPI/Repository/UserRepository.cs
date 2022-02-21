@@ -27,14 +27,17 @@ namespace UserManagement_WebAPI.Repository
             return context.Users.Find(id);
         }
 
-        public User GetUserByAccount(string email, string password)
+        public User GetUserByAccount(string username, string password)
         {
-            return context.Users.FirstOrDefault(u => u.Email == email && u.Password == password);
+            //var user = context.Users.FirstOrDefault(u => u.Email == email && u.Password == password);
+            //user.LastLoginDate = DateTime.Now;
+            return context.Users.FirstOrDefault(u => u.UserName == username && u.Password == password);
         }
 
-        public void InsertUser(User user)
+        public void InsertUser(UserDto user)
         {
-            context.Users.Add(user);
+            User newUser = new() { UserId = user.UserId, Email = user.Email, Password = user.Password, UserName = user.UserName, FullName = user.FullName, CreatedDate = DateTime.Now, LastLoginDate = DateTime.Now };
+            context.Users.Add(newUser);
         }
 
         public void DeleteUser(int studentID)

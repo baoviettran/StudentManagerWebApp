@@ -11,7 +11,7 @@ using UserManagement_WebAPI.Repository;
 
 namespace UserManagement_WebAPI.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class UserController : ControllerBase
@@ -49,7 +49,7 @@ namespace UserManagement_WebAPI.Controllers
         [HttpPut("{id}")]
         public IActionResult PutUser(int id, UserDto user)
         {
-            var newUser = new User() {UserId=id, Email=user.Email, Password=user.Password, UserName = user.UserName };
+            var newUser = new User() {UserId=id, Email=user.Email, Password=user.Password, UserName = user.UserName, FullName = user.FullName };
 
             _userRepo.UpdateUser(newUser);
 
@@ -75,8 +75,9 @@ namespace UserManagement_WebAPI.Controllers
         // POST: api/User
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public ActionResult<User> PostUser(User user)
+        public ActionResult<User> PostUser(UserDto user)
         {
+            
             _userRepo.InsertUser(user);
             try
             {

@@ -41,6 +41,8 @@ namespace UserManagement_WebAPI.Controllers
             {
                 var tokenString = GenerateJSONWebToken(user);
                 response = Ok(new { token = tokenString });
+                var log = LastLoginLog(user);
+                
             }
 
             return response;
@@ -54,7 +56,7 @@ namespace UserManagement_WebAPI.Controllers
             var token = new JwtSecurityToken(_configuration["Jwt:Issuer"],
               _configuration["Jwt:Issuer"],
               null,
-              expires: DateTime.Now.AddMinutes(120),
+              expires: DateTime.Now.AddMinutes(5),
               signingCredentials: credentials);
 
             return new JwtSecurityTokenHandler().WriteToken(token);
@@ -63,11 +65,34 @@ namespace UserManagement_WebAPI.Controllers
         private User AuthenticateUser(UserAccount login)
         {
             User user = null;
-            user = _userRepo.GetUserByAccount(login.Email, login.Password);
+            user = _userRepo.GetUserByAccount(login.UserName, login.Password);
             
             return user;
         }
 
+        private bool LastLoginLog(User user)
+        {
+            user.LastLoginDate = DateTime.Now;
+
+            _userRepo.UpdateUser(user);
+
+            try
+            {
+                _userRepo.Save();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!_userRepo.ExistUser(user.UserId))
+                {
+                    return false;
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            return true;
+        }
         
     }
 }

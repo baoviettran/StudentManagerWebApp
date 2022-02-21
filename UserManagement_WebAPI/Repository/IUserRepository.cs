@@ -11,7 +11,7 @@ namespace UserManagement_WebAPI.Repository
         IEnumerable<User> GetUsers();
         User GetUserByID(int userID);
         User GetUserByAccount(string email, string password);
-        void InsertUser(User user);
+        void InsertUser(UserDto user);
         void DeleteUser(int userID);
         void UpdateUser(User user);
         bool ExistUser(int userID);
