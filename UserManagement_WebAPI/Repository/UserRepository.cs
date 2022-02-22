@@ -36,13 +36,13 @@ namespace UserManagement_WebAPI.Repository
 
         public void InsertUser(UserDto user)
         {
-            User newUser = new() { UserId = user.UserId, Email = user.Email, Password = user.Password, UserName = user.UserName, FullName = user.FullName, CreatedDate = DateTime.Now, LastLoginDate = DateTime.Now };
+            User newUser = new() { UserId = (context.Users.Max(u => u.UserId)+1), Email = user.Email, Password = user.Password, UserName = user.UserName, FullName = user.FullName, CreatedDate = DateTime.Now, LastLoginDate = DateTime.Now };
             context.Users.Add(newUser);
         }
 
-        public void DeleteUser(int studentID)
+        public void DeleteUser(int userID)
         {
-            User user = context.Users.Find(studentID);
+            User user = context.Users.Find(userID);
             context.Users.Remove(user);
         }
 

@@ -31,7 +31,7 @@ namespace UserManagement_WebAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            var connection = Configuration.GetConnectionString("SchoolDB");
+            var connection = Configuration.GetConnectionString("CloudDB");
             services.AddDbContextPool<SchoolDBContext>(options => options.UseSqlServer(connection));
             services.AddControllers();
             services.AddScoped<IUserRepository, UserRepository>();
@@ -57,6 +57,12 @@ namespace UserManagement_WebAPI
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "UserManagement_WebAPI", Version = "v1" });
             });
+
+            services.AddCors(options => 
+                options.AddDefaultPolicy(
+                    builder => builder.AllowAnyOrigin().AllowAnyHeader()
+                )
+            );
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -70,6 +76,8 @@ namespace UserManagement_WebAPI
             }
 
             app.UseRouting();
+
+            app.UseCors();
 
             app.UseAuthentication();
 

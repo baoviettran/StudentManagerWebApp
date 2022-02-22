@@ -85,17 +85,10 @@ namespace UserManagement_WebAPI.Controllers
             }
             catch (DbUpdateException)
             {
-                if (_userRepo.ExistUser(user.UserId))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
+                throw;
             }
 
-            return CreatedAtAction("GetUser", new { id = user.UserId }, user);
+            return Ok();
         }
 
         // DELETE: api/User/5
