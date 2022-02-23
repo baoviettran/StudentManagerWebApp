@@ -11,7 +11,7 @@ using UserManagement_WebAPI.Repository;
 
 namespace UserManagement_WebAPI.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class UserController : ControllerBase
